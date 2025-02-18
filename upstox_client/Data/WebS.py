@@ -1,22 +1,77 @@
+from __future__ import print_function
+import time
 import upstox_client
+from pprint import pprint
 from upstox_client.Utils.Constants import *
-
-def on_message(message):
-    print(message)
-
-
-def main():
-    print('aaaa '+access_token)
-    configuration = upstox_client.Configuration()
-    access_token = access_token
-    configuration.access_token = access_token
-
-    streamer = upstox_client.MarketDataStreamerV3(
-        upstox_client.ApiClient(configuration), ["NSE_INDEX|Nifty 50", "NSE_INDEX|Nifty Bank"], "full")
-
-    streamer.on("message", on_message)
-
-    streamer.connect()
+import asyncio
+import json
+import ssl
+import websockets
+import requests
 
 
-main()
+
+class WebS:
+    def get_market_data_feed_authorize_v3():
+        global access_token
+        # """Get authorization for market data feed."""
+        print(access_token)
+        headers = {
+            'Accept': 'application/json',
+            'Authorization': f'Bearer {access_token}'
+        }
+        url = 'https://api.upstox.com/v3/feed/market-data-feed/authorize'
+        api_response = requests.get(url=url, headers=headers)
+        print(api_response.json())
+        return api_response.json()
+    
+    def decode_protobuf(buffer):
+        # """Decode protobuf message."""
+        feed_response = pb.FeedResponse()
+        feed_response.ParseFromString(buffer)
+        return feed_response
+    
+    async def fetch_market_data(self):
+        """Fetch market data using WebSocket and print it."""
+        print('accesss_tokennnnn')
+        print(access_token)
+        # Create default SSL context
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+
+        # Get market data feed authorization
+        response = get_market_data_feed_authorize_v3()
+        # Connect to the WebSocket with SSL context
+        async with websockets.connect(response["data"]["authorized_redirect_uri"], ssl=ssl_context) as websocket:
+            print('Connection established')
+
+            await asyncio.sleep(1)  # Wait for 1 second
+
+            # Data to be sent over the WebSocket
+            data = {
+                "guid": "someguid",
+                "method": "sub",
+                "data": {
+                    "mode": "full",
+                    "instrumentKeys": ["NSE_INDEX|Nifty Bank", "NSE_INDEX|Nifty 50"]
+                }
+            }
+
+            # Convert data to binary and send over WebSocket
+            binary_data = json.dumps(data).encode('utf-8')
+            await websocket.send(binary_data)
+
+            # Continuously receive and decode data from WebSocket
+            while True:
+                message = await websocket.recv()
+                decoded_data = decode_protobuf(message)
+
+                # Convert the decoded data to a dictionary
+                data_dict = MessageToDict(decoded_data)
+
+                # Print the dictionary representation
+                print(json.dumps(data_dict))
+
+obj = WebS()
+obj.fetch_market_data()
