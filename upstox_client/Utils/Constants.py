@@ -5,7 +5,7 @@ secret_key = 'm4qauwxr5v'
 redirect_uri = 'https://pro.upstox.com/holdings'
 finalUrl = f'https://api.upstox.com/v2/login/authorization/dialog?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}'
 code = 'EvU0FQ'
-access_token = 'eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiIxNjg5MTIiLCJqdGkiOiI2N2I0NWExMGJhNzM5ZTBmNjUxOGE1ZTUiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzM5ODcyNzg0LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3Mzk5MTYwMDB9.E8Oct_-aCul8RMmBnHe_rBOywt_rfc0bcjgAvQwJmR8'
+access_token = 'eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiIxNjg5MTIiLCJqdGkiOiI2N2I1Njk0NjVjZjZiMDJhNGU0YWY5NDgiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzM5OTQyMjE0LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3NDAwMDI0MDB9.-AoSE0I_-z53aGWQjsX__7BV-c_IIMri44BGpnX2dZg'
 
 # Orders
 place_order_url = 'https://api-hft.upstox.com/v2/order/place'
