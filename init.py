@@ -20,18 +20,35 @@ import threading
 
 
 
+def run_async_fetch_market_data(event):
+    """Run fetch_market_data and signal when ready."""
+    print(event)
+    event.set()
+    asyncio.run(fetch_market_data())  # Pass the event to fetch_market_data
+
 def start():
-    # printFinalUrl()
-    # getAccessToken()
-    # placeOrder()
-    
-    process_thread = threading.Thread(target=processData, daemon=True)
-    process_thread.start()
-    asyncio.run(fetch_market_data())
+    # Create an event to signal when fetch_market_data is ready
+    ready_event = threading.Event()
+
+    # Start fetch_market_data thread
+    process_thread2 = threading.Thread(target=run_async_fetch_market_data, args=(ready_event,), daemon=True)
+    process_thread2.start()
+    print('waiting')
+    # Wait for fetch_market_data to signal readiness
+    ready_event.wait()  # Blocks until fetch_market_data sets the event
+    print('waiting complete')
+    # Start processData thread
+    process_thread1 = threading.Thread(target=processData, daemon=True)
+    process_thread1.start()
+
     print('called final url')
 
+    process_thread2.join()
+    process_thread1.join()
 
-start()
+
+if __name__ == "__main__":
+    start()
 
 
 

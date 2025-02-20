@@ -12,6 +12,7 @@ import upstox_client.Data.MarketDataFeed_pb2 as pb
 from google.protobuf.json_format import MessageToDict
 from datetime import datetime
 import pytz
+import queue
 
 
 
@@ -77,8 +78,10 @@ async def fetch_market_data():
             # Print the dictionary representation
             # print(json.dumps(data_dict))
             if(data_dict.get('type',None) == 'live_feed'):
-                pubsub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
+                pubSub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
                 .get('ltpc', {}).get('ltp', None),data_dict.get('currentTs',None)))
+            else:
+                print('Not live')
 
 def convert_to_ist(ltt):
     """Convert LTT (in ms) to IST time format."""
@@ -92,5 +95,24 @@ def create_trade_data(ltp, ltt):
         "LTP": ltp,
         "LTT_IST": convert_to_ist(ltt)
     }
-# Execute the function to fetch market data
-# asyncio.run(fetch_market_data())
+
+
+
+
+class PubSub:
+    def __init__(self):
+        print('Initialized the subscribers')
+        self.subscribers = []
+
+    def subscribe(self):
+        """Each subscriber gets a queue to receive messages."""
+        q = queue.Queue()
+        self.subscribers.append(q)
+        return q
+
+    def publish(self, message):
+        """Publish a message to all subscribers."""
+        for q in self.subscribers:
+            q.put(message)
+
+pubSub = PubSub()
