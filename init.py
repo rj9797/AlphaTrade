@@ -4,8 +4,8 @@ from upstox_client.Login.Login import *
 from upstox_client.Orders.PlaceOrder import *
 from upstox_client.Data.WebS import *
 from upstox_client.Data.WebS import *
-
 import asyncio
+from upstox_client.Stats import *
 
 # if __name__ == "__main__":   
 #     asyncio.run(main())
@@ -17,15 +17,19 @@ import asyncio
 # Call the main function inside an asyncio event loop
 
 
-def getFileUrl():
+
+
+def start():
     # printFinalUrl()
     # getAccessToken()
     # placeOrder()
+    
+    processData()
     asyncio.run(fetch_market_data())
     print('called final url')
 
 
-getFileUrl()
+start()
 
 
 
