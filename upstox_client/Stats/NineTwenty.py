@@ -1,13 +1,13 @@
 
 import time
-from PubSubInitializer import pubSub
+import requests
+from upstox_client.PubSubInitializer import pubSub
 
 def processData():
-    queue = pubsub.subscribe()
+    queue = pubSub.subscribe()
     print(queue)
     while True:
-        time.sleep(60)  # 5-minute interval
-        print('Queue: '+queue.get())
+        time.sleep(10)  # 5-minute interval
         if not queue.empty():
             data = queue.get()
             print(f"[1m Consumer] Processed: {data}")

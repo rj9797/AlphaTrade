@@ -1,3 +1,5 @@
+import queue
+
 class PubSub:
     def __init__(self):
         print('Initialized the subscribers')

@@ -5,7 +5,8 @@ from upstox_client.Orders.PlaceOrder import *
 from upstox_client.Data.WebS import *
 from upstox_client.Data.WebS import *
 import asyncio
-from upstox_client.Stats import *
+from upstox_client.Stats.NineTwenty import *
+import threading
 
 # if __name__ == "__main__":   
 #     asyncio.run(main())
@@ -24,7 +25,8 @@ def start():
     # getAccessToken()
     # placeOrder()
     
-    processData()
+    process_thread = threading.Thread(target=processData, daemon=True)
+    process_thread.start()
     asyncio.run(fetch_market_data())
     print('called final url')
 
