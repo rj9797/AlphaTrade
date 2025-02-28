@@ -69,19 +69,25 @@ async def fetch_market_data():
 
         # Continuously receive and decode data from WebSocket
         while True:
-            message = await websocket.recv()
-            decoded_data = decode_protobuf(message)
+            try:
+                message = await asyncio.wait_for(websocket.recv(), timeout=20)
+                decoded_data = decode_protobuf(message)
 
-            # Convert the decoded data to a dictionary
-            data_dict = MessageToDict(decoded_data)
+                # Convert the decoded data to a dictionary
+                data_dict = MessageToDict(decoded_data)
 
-            # Print the dictionary representation
-            # print(json.dumps(data_dict))
-            if(data_dict.get('type',None) == 'live_feed'):
-                pubSub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
-                .get('ltpc', {}).get('ltp', None),data_dict.get('currentTs',None)))
-            else:
-                print('Not live')
+                # Print the dictionary representation
+                print(json.dumps(data_dict))
+                if(data_dict.get('type',None) == 'live_feed'):
+                    pubSub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
+                    .get('ltpc', {}).get('ltp', None),data_dict.get('currentTs',None)))
+                else:
+                    pubSub.publish('Publishing no live data 22127.4')
+                    print('Not live')
+            except:
+                print("No message received in 10 seconds. Waiting again...")
+                #  await websocket.close() 
+
 
 def convert_to_ist(ltt):
     """Convert LTT (in ms) to IST time format."""

@@ -7,12 +7,14 @@ def processData():
     queue = pubSub.subscribe()
     print(queue)
     while True:
-        time.sleep(10)  # 5-minute interval
+        time.sleep(5)  # 5-minute interval
         print('processing data now iin nine twenty')
-        print(queue.get())
+        # print(queue.get())
         if not queue.empty():
             data = queue.get()
             print(f"[1m Consumer] Processed: {data}")
+        else:
+            print('No data in queue!!1')
 
 # Global variables
 prices = []  # Stores the last 9 prices
