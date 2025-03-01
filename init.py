@@ -18,13 +18,14 @@ async def main():
 
 def start():
     """Start WebSocket (async) & Consumer (threading) properly."""
+    placeOrder()
     # Start price consumer in a separate thread
-    process_thread = threading.Thread(target=processData, daemon=True)
-    process_thread.start()
+    # process_thread = threading.Thread(target=processData, daemon=True)
+    # process_thread.start()
 
     # Run WebSocket fetcher in the main asyncio event loop
-    asyncio.run(main())  # Runs fetch_market_data()
-    process_thread.join()
+    # asyncio.run(main())  # Runs fetch_market_data()
+    # process_thread.join()
     
 
 if __name__ == "__main__":
