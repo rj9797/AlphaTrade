@@ -12,15 +12,25 @@ def placeOrder(index,option_type, transaction_type, spot_price):
 
     instrumentKey = NSE_MAP[index]
     strike_price = None
+    instrumentToken = None
     if(index == "NIFTY"):
         if(option_type == "CALL"):
             strike_price = nearest_strike_price_call(spot_price, 50)
+        else:
+            strike_price = nearest_strike_price_put(spot_price, 50)
+
+        # Need to change the expiry
+        expiryDate = '2025-03-06'
+        instrumentToken = getInstrumentToken(instrumentKey,expiryDate)
+        if(instrumentToken == None):
+            print("Error: Instrument token not found !!")
+            return
     else:
         # SEND SMS
         print(f"The given index key {index} is unknow in the code conditions")
-        return -1
+        return
 
-
+    print("Found instrument token, going to place order: !")
 
     headers = {
         'Content-Type': 'application/json',
@@ -33,7 +43,7 @@ def placeOrder(index,option_type, transaction_type, spot_price):
         'validity': 'DAY',
         'price': 0.0,
         'tag': 'string',
-        'instrument_token' : 'NSE_FO|63491',
+        'instrument_token' : instrumentToken,
         'order_type' : 'MARKET',
         'transaction_type': 'BUY',
         'trigger_price': 13.2,
@@ -53,6 +63,8 @@ def getInstrumentToken(instrumentKey, expiryDate):
     params = {
         'instrument_key': 'NSE_INDEX|Nifty 50',
         'expiry_date': '2025-03-06'
+        # 'instrument_key': instrumentKey,
+        # 'expiry_date': expiryDate
     }
     headers = {
         'Accept': 'application/json',
@@ -71,5 +83,5 @@ def nearest_strike_price_call(spot_price, strike_increment):
 
 def nearest_strike_price_put(spot_price, strike_increment):
     # Round down to the nearest multiple of the strike increment
-    nearest_strike = math.floor(spot_price / strike_increment) * strike_increment
+    nearest_strike = math.ceil(spot_price / strike_increment) * strike_increment
     return nearest_strike

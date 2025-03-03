@@ -47,6 +47,9 @@ async def fetch_market_data():
     # Get market data feed authorization
     response = get_market_data_feed_authorize_v3()
     # Connect to the WebSocket with SSL context
+    if(response['status'] == "error"):
+        print("Something went wrong while establishing connection")
+        return;
     async with websockets.connect(response["data"]["authorized_redirect_uri"], ssl=ssl_context) as websocket:
         print('Connection established')
 
@@ -82,7 +85,7 @@ async def fetch_market_data():
                     pubSub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
                     .get('ltpc', {}).get('ltp', None),data_dict.get('currentTs',None)))
                 else:
-                    pubSub.publish('Publishing no live data 22127.4')
+                    # pubSub.publish(-1)
                     print('Not live')
             except:
                 print("No message received in 10 seconds. Waiting again...")
