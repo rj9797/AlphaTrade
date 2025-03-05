@@ -20,8 +20,9 @@ def placeOrder(index,option_type, transaction_type, spot_price):
             strike_price = nearest_strike_price_put(spot_price, 50)
 
         # Need to change the expiry
-        expiryDate = '2025-03-06'
+        expiryDate = '2025-03-13'
         instrumentToken = getInstrumentToken(instrumentKey,expiryDate)
+        print(f'Instrument token: {instrumentToken}')
         if(instrumentToken == None):
             print("Error: Instrument token not found !!")
             return
@@ -62,7 +63,7 @@ def getInstrumentToken(instrumentKey, expiryDate):
     url = 'https://api.upstox.com/v2/option/chain'
     params = {
         'instrument_key': 'NSE_INDEX|Nifty 50',
-        'expiry_date': '2025-03-06'
+        'expiry_date': '2025-03-13'
         # 'instrument_key': instrumentKey,
         # 'expiry_date': expiryDate
     }
@@ -74,6 +75,8 @@ def getInstrumentToken(instrumentKey, expiryDate):
     response = requests.get(url, params=params, headers=headers)
     # opt_chain_table = pd.DataFrame.from_dict(response.json()['data'])
     option_chain = response.json()['data']
+    print('Printing jsonnn')
+    print(option_chain[0]['strike_price'])
 
 
 def nearest_strike_price_call(spot_price, strike_increment):

@@ -11,6 +11,8 @@ def processData():
         time.sleep(10)  # 5-minute interval
         print('processing data now iin nine twenty')
         # print(queue.get())
+        # To be deleted
+        placeOrder("NIFTY","PUT","SELL",22337.50)
         if not queue.empty():
             data = queue.get()
             ltp = data['LTP']
