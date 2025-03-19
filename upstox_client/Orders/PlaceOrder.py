@@ -23,7 +23,7 @@ def placeOrder(index,option_type, transaction_type, spot_price):
         print(f'option_type: {option_type} ----spot price {spot_price} ---- strike price {strike_price} ')
         # Need to change the expiry
         expiryDate = '2025-04-03'
-        instrumentToken = getInstrumentToken(instrumentKey,expiryDate)
+        instrumentToken = getInstrumentToken(instrumentKey,expiryDate,option_type,strike_price)
         print(f'Instrument token: {instrumentToken}')
         if(instrumentToken == None):
             print("Error: Instrument token not found !!")
@@ -34,7 +34,7 @@ def placeOrder(index,option_type, transaction_type, spot_price):
         return
 
     print("Found instrument token, going to place order: !")
-    return
+
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -61,7 +61,7 @@ def placeOrder(index,option_type, transaction_type, spot_price):
     except Exception as e:
         print('Error while placing order:', str(e))
 
-def getInstrumentToken(instrumentKey, expiryDate):
+def getInstrumentToken(instrumentKey, expiryDate, option_type,strike_price):
     url = 'https://api.upstox.com/v2/option/chain'
     params = {
         'instrument_key': 'NSE_INDEX|Nifty 50',
@@ -78,6 +78,18 @@ def getInstrumentToken(instrumentKey, expiryDate):
     # opt_chain_table = pd.DataFrame.from_dict(response.json()['data'])
     # option_chain = response.json()['data']
     option_chain = response.json()
+    print(f'Response::: {option_chain.get('status')}')
+    if option_chain is not None and option_chain.get('status') == 'success':
+         for entry in option_chain["data"]:
+            if entry["strike_price"] == strike_price:
+                if option_type.lower() == "call":
+                    print(entry["call_options"]["market_data"]["ltp"])
+                    return entry["call_options"]["instrument_key"]
+                elif option_type.lower() == "put":
+                    print(entry["call_options"]["market_data"]["ltp"])
+                    return entry["put_options"]["instrument_key"]
+    else:
+        print('Failed to fetch instrument token')
     # logger.info('Printing option chain instrument')
     # logger.info(option_chain)
 
