@@ -13,6 +13,7 @@ from google.protobuf.json_format import MessageToDict
 from datetime import datetime
 import pytz
 import queue
+from upstox_client.LoggerConfig import logger
 
 
 
@@ -80,7 +81,8 @@ async def fetch_market_data():
                 data_dict = MessageToDict(decoded_data)
 
                 # Print the dictionary representation
-                print(json.dumps(data_dict))
+                # print(json.dumps(data_dict))
+                print('Fetching...')
                 if(data_dict.get('type',None) == 'live_feed'):
                     pubSub.publish(create_trade_data(data_dict.get('feeds',None).get('NSE_INDEX|Nifty 50', {}).get('ff', {}).get('indexFF', {})
                     .get('ltpc', {}).get('ltp', None),data_dict.get('currentTs',None)))

@@ -2,6 +2,7 @@ import requests
 from upstox_client.Utils.Constants import *
 from upstox_client.Utils.MapData import *
 import math
+from upstox_client.LoggerConfig import logger
 
 def placeOrder(index,option_type, transaction_type, spot_price):
     if index not in NSE_MAP:
@@ -19,8 +20,9 @@ def placeOrder(index,option_type, transaction_type, spot_price):
         else:
             strike_price = nearest_strike_price_put(spot_price, 50)
 
+        print(f'option_type: {option_type} ----spot price {spot_price} ---- strike price {strike_price} ')
         # Need to change the expiry
-        expiryDate = '2025-03-13'
+        expiryDate = '2025-04-03'
         instrumentToken = getInstrumentToken(instrumentKey,expiryDate)
         print(f'Instrument token: {instrumentToken}')
         if(instrumentToken == None):
@@ -32,7 +34,7 @@ def placeOrder(index,option_type, transaction_type, spot_price):
         return
 
     print("Found instrument token, going to place order: !")
-
+    return
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -63,7 +65,7 @@ def getInstrumentToken(instrumentKey, expiryDate):
     url = 'https://api.upstox.com/v2/option/chain'
     params = {
         'instrument_key': 'NSE_INDEX|Nifty 50',
-        'expiry_date': '2025-03-13'
+        'expiry_date': '2025-04-03'
         # 'instrument_key': instrumentKey,
         # 'expiry_date': expiryDate
     }
@@ -74,9 +76,10 @@ def getInstrumentToken(instrumentKey, expiryDate):
 
     response = requests.get(url, params=params, headers=headers)
     # opt_chain_table = pd.DataFrame.from_dict(response.json()['data'])
-    option_chain = response.json()['data']
-    print('Printing jsonnn')
-    print(option_chain[0]['strike_price'])
+    # option_chain = response.json()['data']
+    option_chain = response.json()
+    # logger.info('Printing option chain instrument')
+    # logger.info(option_chain)
 
 
 def nearest_strike_price_call(spot_price, strike_increment):
