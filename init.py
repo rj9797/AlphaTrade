@@ -6,12 +6,15 @@ from upstox_client.Data.WebS import *
 from upstox_client.Data.WebS import *
 import asyncio
 from upstox_client.Stats.NineTwenty import *
+from upstox_client.Data.FetchHistoricalData import *
 import threading
 
 
 async def main():
     """Start WebSocket fetcher in the main thread."""
-    await fetch_market_data()
+    # await fetch_market_data()
+    getData('NIFTY','30minute','2025-02-05','2025-02-10')
+    
 
 # Call the main function inside an asyncio event loop
 
