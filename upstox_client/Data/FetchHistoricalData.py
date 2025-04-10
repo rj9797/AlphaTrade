@@ -2,6 +2,8 @@ import pandas as pd
 from datetime import datetime, time
 from upstox_client.Utils.Constants import *
 import requests
+from upstox_client.LoggerConfig import logger
+from upstox_client.Utils.Utility import *
 
 
 def getInstrumentKey(symbol):
@@ -20,7 +22,7 @@ def getData(symbol, interval, date_from, date_to):
 
     # Check the response status
     if response.status_code == 200:
-        print(response.json())
+        decodeHistoricalData(response.json())
     else:
         # Print an error message if the request was not successful
         print(f"Error: {response.status_code} - {response.text}")
@@ -28,3 +30,18 @@ def getData(symbol, interval, date_from, date_to):
 
 
 # print(getData('NIFTY27FEB22850PE','30minute','2025-02-05','2025-02-10'))
+
+def decodeHistoricalData(response):
+    formatted_data = [
+        {
+            'timestamp': convert_date(candle[0]),
+            'open': candle[1],
+            'high': candle[2],
+            'low': candle[3],
+            'close': candle[4],
+            'volume': candle[5],
+            'open_interest': candle[6]
+        }
+        for candle in response['data']['candles']
+    ]
+    logger.info(formatted_data);

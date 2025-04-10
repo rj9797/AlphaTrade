@@ -1,5 +1,6 @@
 import requests
 from upstox_client.Utils.Constants import *
+from datetime import datetime, time
 
 def getInstrumentTokenForOptions(instrumentKey, expiryDate, option_type,strike_price):
     url = 'https://api.upstox.com/v2/option/chain'
@@ -30,3 +31,6 @@ def getInstrumentTokenForOptions(instrumentKey, expiryDate, option_type,strike_p
                     return entry["put_options"]["instrument_key"]
     else:
         print('Failed to fetch instrument token')
+
+def convert_date(row):
+    return datetime.fromisoformat(row).strftime('%Y-%m-%d %H:%M:%S')
