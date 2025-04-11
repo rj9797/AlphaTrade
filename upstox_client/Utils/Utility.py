@@ -34,3 +34,8 @@ def getInstrumentTokenForOptions(instrumentKey, expiryDate, option_type,strike_p
 
 def convert_date(row):
     return datetime.fromisoformat(row).strftime('%Y-%m-%d %H:%M:%S')
+
+def liveEmaCalculation(interval,prevEma):
+    k = 2 / (period + 1)
+    currEma = (price - prev_ema) * k + prev_ema
+    return currEma

@@ -13,7 +13,9 @@ import threading
 async def main():
     """Start WebSocket fetcher in the main thread."""
     # await fetch_market_data()
-    getData('NIFTY','30minute','2025-02-05','2025-02-10')
+
+    formatted_data = getData('NIFTY','30minute','2025-02-05','2025-02-10')
+    
     
 
 # Call the main function inside an asyncio event loop
@@ -23,7 +25,8 @@ def start():
     """Start WebSocket (async) & Consumer (threading) properly."""
     # placeOrder()
     # Start price consumer in a separate thread
-    process_thread = threading.Thread(target=processData, daemon=True)
+    # process_thread = threading.Thread(target=processLiveData, daemon=True)
+    process_thread = threading.Thread(target=testEfficiency, daemon=True)
     process_thread.start()
 
     print("Starting")
